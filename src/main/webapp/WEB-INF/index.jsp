@@ -52,6 +52,37 @@
                 </form:form>
             </div>
         </div>
+        <!--  <table class="table table-striped mt-3">
+            <tbody>
+                <tr>
+                    <th>Destination</th>
+                    <th>Description</th>
+                    <th>Country</th>
+                </tr>
+                <c:forEach items="${destinations}" var="dest">
+                    <tr>
+                        <td>${dest.name}</td>
+                        <td>${dest.description}</td>
+                        <td>${dest.country.name}</td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table> -->
+        <table class="table table-striped mt-3">
+            <tbody>
+                <tr>
+                    <th>Country</th>
+                    <th>Number of Destinations</th>
+                </tr>
+                <c:forEach items="${countries}" var="cntr">
+                    <tr>
+                        <td><a href="/country/${cntr.id}">${cntr.name}</a></td>
+                        <td>${cntr.destinations.size()}</td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
+        
     </div>
 </body>
 </html>

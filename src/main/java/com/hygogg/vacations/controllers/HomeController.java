@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -29,7 +30,8 @@ public class HomeController {
 	public String index(Model model) {
 		model.addAttribute("country", new Country());
 		model.addAttribute("destination", new Destination());
-		model.addAttribute("countries", cs.getAll());
+		model.addAttribute("countries", cs.topCountries());
+		model.addAttribute("destinations", ds.getAll());
 		return "index.jsp";
 	}
 	
@@ -37,9 +39,10 @@ public class HomeController {
 	public String addCountry(@Valid @ModelAttribute("country") Country c, BindingResult result, Model model) {
 		if(result.hasErrors()) {
 			model.addAttribute("destination", new Destination());
+			model.addAttribute("countries", cs.getAll());
+			model.addAttribute("destinations", ds.getAll());
 			return "index.jsp";
 		} else {
-			// TODO: check for country uniqueness
 			cs.create(c);
 			return "redirect:/";
 		}
@@ -49,11 +52,32 @@ public class HomeController {
 	public String addDestination(@Valid @ModelAttribute("destination") Destination d, BindingResult result, Model model) {
 		if(result.hasErrors()) {
 			model.addAttribute("country", new Country());
+			model.addAttribute("countries", cs.getAll());
+			model.addAttribute("destinations", ds.getAll());
 			return "index.jsp";
 		} else {
 			// TODO: check for destination uniqueness
 			ds.create(d);
 			return "redirect:/";
+		}
+	}
+	
+	@RequestMapping("/country/{id}")
+	public String countryDetails(@PathVariable("id") Long id, Model model) {
+		model.addAttribute("country", cs.getOne(id));
+		model.addAttribute("destination", new Destination());
+		return "country.jsp";
+	}
+	
+	@PostMapping("/destination/{id}")
+	public String addDestinationToCountry(@Valid @ModelAttribute("destination") Destination d, BindingResult result, Model model, @PathVariable("id") Long id) {
+		if(result.hasErrors()) {
+			model.addAttribute("country", cs.getOne(id));
+			return "country.jsp";
+		} else {
+			// TODO: check for destination uniqueness
+			ds.create(d);
+			return "redirect:/country/" + id;
 		}
 	}
 	
