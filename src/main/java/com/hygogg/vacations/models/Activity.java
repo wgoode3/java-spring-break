@@ -12,49 +12,40 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="destinations")
-public class Destination {
-
+@Table(name="activities")
+public class Activity {
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Size(min=3, message="The destination needs at least 3 letters for its name!")
+	@Size(min=3, message="The activity name must be 3 characters or longer")
 	public String name;
-	
-	@Size(min=10, message="Description needs to be 10 characters or longer!")
-	public String description;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="country_id")
-    private Country country;
-	
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-			name = "activities_at_destinations", 
-	        joinColumns = @JoinColumn(name = "destination_id"), 
-	        inverseJoinColumns = @JoinColumn(name = "activity_id")
-	)
-	private List<Activity> activities;
 
 	@Column(updatable=false)
     private Date createdAt;
 	
     private Date updatedAt;
-
-	public Destination(String name, String description) {
-		this.name = name;
-		this.description = description;
-	}
-	
-	public Destination() {}
+    
+    public Activity(String name) {
+    	this.name = name;
+    }
+    
+    public Activity() {}
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "activities_at_destinations", 
+        joinColumns = @JoinColumn(name = "activity_id"), 
+        inverseJoinColumns = @JoinColumn(name = "destination_id")
+    )
+    private List<Destination> destinations;
 
 	public Long getId() {
 		return id;
@@ -70,30 +61,6 @@ public class Destination {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	public Country getCountry() {
-		return country;
-	}
-
-	public void setCountry(Country country) {
-		this.country = country;
-	}
-	
-	public List<Activity> getActivities() {
-		return activities;
-	}
-
-	public void setActivities(List<Activity> activities) {
-		this.activities = activities;
 	}
 
 	public Date getCreatedAt() {
@@ -112,6 +79,14 @@ public class Destination {
 		this.updatedAt = updatedAt;
 	}
 	
+	public List<Destination> getDestinations() {
+		return destinations;
+	}
+
+	public void setDestinations(List<Destination> destinations) {
+		this.destinations = destinations;
+	}
+	
 	@PrePersist
     protected void onCreate(){
         this.createdAt = new Date();
@@ -121,5 +96,5 @@ public class Destination {
     protected void onUpdate(){
     	this.updatedAt = new Date();
     }
-    
+
 }

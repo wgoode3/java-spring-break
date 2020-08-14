@@ -22,7 +22,7 @@
                     <li class="list-group-item bg-dark text-light">Destinations: ${country.destinations.size()}</li>
                     <c:forEach items="${country.destinations}" var="dest">
                         <li class="list-group-item">
-                            ${dest.name}<br>
+                            <a href="/destination/${dest.id}">${dest.name}</a><br>
                             ${dest.description}
                         </li>
                     </c:forEach>
